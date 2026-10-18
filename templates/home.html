@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}StyleCart - Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center p-5 shadow-sm">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <span class="badge bg-primary px-3 py-2 rounded-pill mb-3 text-uppercase">New Season Arrivals</span>
+            <h1 class="display-4 fw-bold mb-3">Discover Your Signature Style</h1>
+            <p class="lead text-light opacity-75 mb-4">
+                Explore hand-picked premium apparel, accessories, and tech essentials with unbeatable quality and direct doorstep delivery.
+            </p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{% url 'products' %}" class="btn btn-primary btn-lg px-4 shadow">
+                    <i class="bi bi-bag-fill me-2"></i>Start Shopping
+                </a>
+                <a href="#featured" class="btn btn-outline-light btn-lg px-4">
+                    Explore Featured
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Row -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="feature-box h-100">
+            <div class="feature-icon"><i class="bi bi-truck"></i></div>
+            <h5 class="fw-bold">Fast & Free Delivery</h5>
+            <p class="text-muted small mb-0">Free expedited shipping on all orders over $50 with reliable tracking.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-box h-100">
+            <div class="feature-icon"><i class="bi bi-shield-check"></i></div>
+            <h5 class="fw-bold">100% Secure Checkout</h5>
+            <p class="text-muted small mb-0">Safe ordering process with encrypted transactions and instant order confirmations.</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="feature-box h-100">
+            <div class="feature-icon"><i class="bi bi-arrow-repeat"></i></div>
+            <h5 class="fw-bold">Easy Returns</h5>
+            <p class="text-muted small mb-0">Hassle-free 30-day money-back guarantee on all eligible fashion items.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Featured Products Section -->
+<div id="featured" class="mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">Featured Products</h3>
+            <p class="text-muted small mb-0">Our most popular trending selections</p>
+        </div>
+        <a href="{% url 'products' %}" class="btn btn-outline-primary btn-sm">
+            View All Products <i class="bi bi-arrow-right ms-1"></i>
+        </a>
+    </div>
+
+    <div class="row g-4">
+        {% if products %}
+            {% for product in products %}
+                <div class="col-sm-6 col-md-4 col-lg-3">
+                    <div class="product-card shadow-sm">
+                        <div class="product-img-wrapper">
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-img">
+                            {% elif product.category == 'Apparel' %}
+                                <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=60" alt="{{ product.name }}" class="product-img">
+                            {% elif product.category == 'Footwear' %}
+                                <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60" alt="{{ product.name }}" class="product-img">
+                            {% elif product.category == 'Accessories' %}
+                                <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60" alt="{{ product.name }}" class="product-img">
+                            {% elif product.category == 'Bags' %}
+                                <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=60" alt="{{ product.name }}" class="product-img">
+                            {% elif product.category == 'Electronics' %}
+                                <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=60" alt="{{ product.name }}" class="product-img">
+                            {% else %}
+                                <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=60" alt="{{ product.name }}" class="product-img">
+                            {% endif %}
+                        </div>
+                        <div class="product-body">
+                            <span class="product-category">{{ product.category|default:"Lifestyle" }}</span>
+                            <h5 class="product-title text-truncate" title="{{ product.name }}">{{ product.name }}</h5>
+                            <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
+                                <span class="product-price">${{ product.price }}</span>
+                                <a href="{% url 'product_detail' product.id %}" class="btn btn-sm btn-outline-primary">
+                                    View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Sample UI Placeholders for Phase 2 before DB connection in Phase 4 -->
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="product-card shadow-sm">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=60" alt="Classic White T-Shirt" class="product-img">
+                    </div>
+                    <div class="product-body">
+                        <span class="product-category">Apparel</span>
+                        <h5 class="product-title">Classic Cotton Tee</h5>
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
+                            <span class="product-price">$24.99</span>
+                            <a href="{% url 'products' %}" class="btn btn-sm btn-outline-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="product-card shadow-sm">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60" alt="Sport Sneaker" class="product-img">
+                    </div>
+                    <div class="product-body">
+                        <span class="product-category">Footwear</span>
+                        <h5 class="product-title">Speed Runner Sneakers</h5>
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
+                            <span class="product-price">$89.99</span>
+                            <a href="{% url 'products' %}" class="btn btn-sm btn-outline-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="product-card shadow-sm">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60" alt="Minimalist Watch" class="product-img">
+                    </div>
+                    <div class="product-body">
+                        <span class="product-category">Accessories</span>
+                        <h5 class="product-title">Analog Minimal Watch</h5>
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
+                            <span class="product-price">$120.00</span>
+                            <a href="{% url 'products' %}" class="btn btn-sm btn-outline-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 col-md-4 col-lg-3">
+                <div class="product-card shadow-sm">
+                    <div class="product-img-wrapper">
+                        <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=60" alt="Urban Backpack" class="product-img">
+                    </div>
+                    <div class="product-body">
+                        <span class="product-category">Bags</span>
+                        <h5 class="product-title">Everyday Urban Backpack</h5>
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-3">
+                            <span class="product-price">$45.00</span>
+                            <a href="{% url 'products' %}" class="btn btn-sm btn-outline-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

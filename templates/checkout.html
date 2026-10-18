@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout - StyleCart{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <h2 class="fw-bold"><i class="bi bi-credit-card-2-front me-2 text-primary"></i>Checkout</h2>
+    <p class="text-muted small">Please provide your shipping and contact information to complete your order.</p>
+</div>
+
+<div class="row g-4">
+    <!-- Shipping Form -->
+    <div class="col-lg-7">
+        <div class="card shadow-sm border-0 p-4">
+            <h5 class="fw-bold mb-3 border-bottom pb-2">Shipping Information</h5>
+            
+            <form action="{% url 'process_order' %}" method="POST">
+                {% csrf_token %}
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label for="full_name" class="form-label small fw-semibold">Full Name</label>
+                        <input type="text" class="form-control" id="full_name" name="full_name" value="{{ user.get_full_name|default:user.username }}" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="email" class="form-label small fw-semibold">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="phone" class="form-label small fw-semibold">Phone Number</label>
+                        <input type="text" class="form-control" id="phone" name="phone" placeholder="+1 (555) 000-0000" required>
+                    </div>
+
+                    <div class="col-12">
+                        <label for="address" class="form-label small fw-semibold">Street Address</label>
+                        <input type="text" class="form-control" id="address" name="address" placeholder="123 Main St, Apt 4B" required>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label for="city" class="form-label small fw-semibold">City</label>
+                        <input type="text" class="form-control" id="city" name="city" placeholder="New York" required>
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="state" class="form-label small fw-semibold">State / Province</label>
+                        <input type="text" class="form-control" id="state" name="state" placeholder="NY" required>
+                    </div>
+
+                    <div class="col-md-3">
+                        <label for="zip_code" class="form-label small fw-semibold">ZIP / Postal</label>
+                        <input type="text" class="form-control" id="zip_code" name="zip_code" placeholder="10001" required>
+                    </div>
+                </div>
+
+                <hr class="my-4">
+
+                <h5 class="fw-bold mb-3">Payment Method</h5>
+                <div class="form-check p-3 border rounded mb-3 bg-light">
+                    <input class="form-check-input ms-0 me-3" type="radio" name="payment_method" id="cod" value="COD" checked>
+                    <label class="form-check-label fw-semibold" for="cod">
+                        <i class="bi bi-cash-stack text-success me-2"></i>Cash on Delivery (Standard)
+                    </label>
+                    <div class="text-muted small mt-1 ms-4">Pay with cash upon package arrival at your doorstep.</div>
+                </div>
+                <div class="form-check p-3 border rounded mb-4">
+                    <input class="form-check-input ms-0 me-3" type="radio" name="payment_method" id="card" value="CARD">
+                    <label class="form-check-label fw-semibold" for="card">
+                        <i class="bi bi-credit-card text-primary me-2"></i>Credit / Debit Card (Simulated for Demo)
+                    </label>
+                    <div class="text-muted small mt-1 ms-4">Test card checkout (instant approval without charging real money).</div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">
+                    <i class="bi bi-lock-fill me-2"></i>Confirm & Place Order
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Order Summary Column -->
+    <div class="col-lg-5">
+        <div class="summary-card shadow-sm">
+            <h5 class="fw-bold mb-3 border-bottom pb-2">Your Order Summary</h5>
+            
+            {% if cart_items %}
+                <div class="mb-3" style="max-height: 280px; overflow-y: auto;">
+                    {% for item in cart_items %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="d-flex align-items-center">
+                                <span class="badge bg-secondary rounded-pill me-2">{{ item.quantity }}x</span>
+                                <span class="small fw-semibold text-truncate" style="max-width: 180px;">{{ item.product.name }}</span>
+                            </div>
+                            <span class="small fw-bold">${{ item.subtotal }}</span>
+                        </div>
+                    {% endfor %}
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between mb-2 small text-muted">
+                    <span>Subtotal:</span>
+                    <span class="text-dark fw-semibold">${{ total_price }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2 small text-muted">
+                    <span>Shipping:</span>
+                    <span class="text-success fw-semibold">FREE</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fs-5 fw-bold mb-3">
+                    <span>Grand Total:</span>
+                    <span class="text-primary">${{ total_price }}</span>
+                </div>
+            {% else %}
+                <p class="text-muted small">No items in cart right now.</p>
+                <a href="{% url 'products' %}" class="btn btn-sm btn-outline-primary">Shop Now</a>
+            {% endif %}
+
+            <div class="bg-light p-3 rounded small text-muted mt-3">
+                <i class="bi bi-shield-lock-fill text-success me-1"></i> SSL 256-Bit Encrypted & Secure Checkout
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

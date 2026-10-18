@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} - StyleCart{% endblock %}
+
+{% block content %}
+<div class="mb-3">
+    <a href="{% url 'products' %}" class="btn btn-outline-secondary btn-sm">
+        <i class="bi bi-arrow-left me-1"></i> Back to All Products
+    </a>
+</div>
+
+<div class="card shadow-sm border-0 p-4 mb-5">
+    <div class="row g-5 align-items-center">
+        <!-- Product Image Showcase -->
+        <div class="col-md-6 text-center">
+            <div class="detail-img-box">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="detail-img img-fluid rounded">
+                {% elif product.category == 'Apparel' %}
+                    <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80" alt="{{ product.name }}" class="detail-img img-fluid rounded">
+                {% elif product.category == 'Footwear' %}
+                    <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80" alt="{{ product.name }}" class="detail-img img-fluid rounded">
+                {% elif product.category == 'Accessories' %}
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&auto=format&fit=crop&q=80" alt="{{ product.name }}" class="detail-img img-fluid rounded">
+                {% elif product.category == 'Bags' %}
+                    <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&auto=format&fit=crop&q=80" alt="{{ product.name }}" class="detail-img img-fluid rounded">
+                {% elif product.category == 'Electronics' %}
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&auto=format&fit=crop&q=80" alt="{{ product.name }}" class="detail-img img-fluid rounded">
+                {% else %}
+                    <img src="https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&auto=format&fit=crop&q=80" alt="{{ product.name }}" class="detail-img img-fluid rounded">
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Product Information & Actions -->
+        <div class="col-md-6">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill text-uppercase mb-2">
+                {{ product.category }}
+            </span>
+            <h1 class="fw-bold mb-2 text-dark">{{ product.name }}</h1>
+            
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <span class="fs-2 fw-bold text-primary">${{ product.price }}</span>
+                {% if product.stock > 0 %}
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">
+                        <i class="bi bi-check-circle-fill me-1"></i>In Stock ({{ product.stock }} units)
+                    </span>
+                {% else %}
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1">
+                        <i class="bi bi-x-circle-fill me-1"></i>Out of Stock
+                    </span>
+                {% endif %}
+            </div>
+
+            <p class="text-secondary mb-4 leading-relaxed">
+                {{ product.description }}
+            </p>
+
+            <!-- Add to Cart Form -->
+            <form action="{% url 'add_to_cart' product.id %}" method="POST" class="mb-4">
+                {% csrf_token %}
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width: 100px;">
+                        <label for="quantity" class="form-label small text-muted mb-1">Quantity</label>
+                        <input type="number" id="quantity" name="quantity" class="form-control" value="1" min="1" max="{{ product.stock }}" {% if product.stock <= 0 %}disabled{% endif %}>
+                    </div>
+                    <div class="align-self-end flex-grow-1">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm" {% if product.stock <= 0 %}disabled{% endif %}>
+                            <i class="bi bi-cart-plus me-2"></i> Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Value Highlights -->
+            <div class="border-top pt-4">
+                <div class="row g-3 small text-muted">
+                    <div class="col-6">
+                        <i class="bi bi-shield-check text-primary me-2"></i>100% Guaranteed Authentic
+                    </div>
+                    <div class="col-6">
+                        <i class="bi bi-truck text-primary me-2"></i>Dispatched in 24 Hours
+                    </div>
+                    <div class="col-6">
+                        <i class="bi bi-arrow-counterclockwise text-primary me-2"></i>30-Day Easy Returns
+                    </div>
+                    <div class="col-6">
+                        <i class="bi bi-credit-card text-primary me-2"></i>Cash on Delivery & Card
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Related Products Section -->
+{% if related_products %}
+<div class="mb-5">
+    <h4 class="fw-bold mb-3">You Might Also Like</h4>
+    <div class="row g-4">
+        {% for rel in related_products %}
+            <div class="col-sm-6 col-md-3">
+                <div class="product-card shadow-sm">
+                    <div class="product-img-wrapper">
+                        {% if rel.image %}
+                            <img src="{{ rel.image.url }}" alt="{{ rel.name }}" class="product-img">
+                        {% elif rel.category == 'Apparel' %}
+                            <img src="https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=500&auto=format&fit=crop&q=60" alt="{{ rel.name }}" class="product-img">
+                        {% else %}
+                            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60" alt="{{ rel.name }}" class="product-img">
+                        {% endif %}
+                    </div>
+                    <div class="product-body">
+                        <span class="product-category">{{ rel.category }}</span>
+                        <h6 class="product-title text-truncate">{{ rel.name }}</h6>
+                        <div class="d-flex justify-content-between align-items-center mt-auto pt-2">
+                            <span class="fw-bold">${{ rel.price }}</span>
+                            <a href="{% url 'product_detail' rel.id %}" class="btn btn-sm btn-outline-primary">View</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% endblock %}

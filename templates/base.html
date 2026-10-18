@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}StyleCart - Modern E-Commerce{% endblock %}</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Custom StyleCart CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="{% url 'home' %}">
+                <i class="bi bi-bag-heart-fill text-primary me-2"></i>Style<span class="brand-highlight">Cart</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-warning"><i class="bi bi-list text-white fs-2"></i></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products' %}">All Products</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center gap-3">
+                    <!-- Cart Button with Count Badge -->
+                    <a href="{% url 'cart' %}" class="btn btn-outline-light position-relative">
+                        <i class="bi bi-cart3 me-1"></i> Cart
+                        <span class="badge bg-primary rounded-pill cart-badge" id="cart-count">
+                            {{ cart_total_items|default:"0" }}
+                        </span>
+                    </a>
+
+                    <!-- User Authentication Links -->
+                    {% if user.is_authenticated %}
+                        <div class="dropdown">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle me-1"></i> {{ user.username }}
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                {% if user.is_staff %}
+                                    <li><a class="dropdown-item" href="/admin/" target="_blank"><i class="bi bi-speedometer2 me-2"></i>Admin Panel</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                {% endif %}
+                                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-2"></i>Logout</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="btn btn-outline-light btn-sm">Login</a>
+                        <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Register</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages (Success / Error alerts) -->
+    <div class="container mt-3">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <!-- Main Content Block (Populated by child templates) -->
+    <main class="container my-4">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row g-4 mb-4">
+                <div class="col-md-5">
+                    <h5 class="fw-bold text-white mb-3">
+                        <i class="bi bi-bag-heart-fill text-primary me-2"></i>StyleCart
+                    </h5>
+                    <p class="small text-muted">
+                        Your one-stop destination for quality lifestyle products and trending fashion. Built for the CodeAlpha Full Stack Development Internship.
+                    </p>
+                </div>
+                <div class="col-md-3">
+                    <h6 class="fw-bold text-white mb-3">Quick Links</h6>
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><a href="{% url 'home' %}">Home</a></li>
+                        <li class="mb-2"><a href="{% url 'products' %}">Browse Products</a></li>
+                        <li class="mb-2"><a href="{% url 'cart' %}">My Cart</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h6 class="fw-bold text-white mb-3">Project Details</h6>
+                    <p class="small text-muted mb-1">Developer: Intern</p>
+                    <p class="small text-muted mb-1">Stack: Python, Django, HTML, CSS, JavaScript</p>
+                    <p class="small text-muted">Database: SQLite</p>
+                </div>
+            </div>
+            <hr class="border-secondary my-3">
+            <div class="text-center small text-muted">
+                &copy; 2026 StyleCart. All rights reserved. CodeAlpha Internship Task 1.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JavaScript Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom StyleCart JavaScript -->
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block scripts %}
+    {% endblock %}
+</body>
+</html>
